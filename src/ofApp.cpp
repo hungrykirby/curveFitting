@@ -64,7 +64,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 	if (x > 900 && moveFlag) {
 		line.addVertex(900, 100);
 		moveFlag = false;
-		line = line.getResampledByCount(10);
+		line = line.getResampledByCount(100);
 		lA.setup(line);
 		try {
 			_newLine = lA.calcLeastSquaresMethod();
@@ -73,7 +73,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 			cerr << e.what();
 		}
 		for(int i = 0; i < _newLine.size(); i++){
-			newLine.addVertex(_newLine.getVertices()[i].x*100.0 + 100, -_newLine.getVertices()[i].y*100.0 + 900);
+			newLine.addVertex(_newLine.getVertices()[i].x*lA.rate + 100, -_newLine.getVertices()[i].y*lA.rate + 900);
 		}
 		//cout << newLine.getVertices()[0] << endl;
 	}

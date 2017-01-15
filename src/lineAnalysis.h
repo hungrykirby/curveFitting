@@ -13,6 +13,7 @@ public:
 	ofPolyline calcLeastSquaresMethod();
 	ofPolyline lSM(vector<int> in); //Least-square method
 	float sq(ofVec2f pos1, ofVec2f pos2); //ofDist to int
+	float rate;
 
 private:
 	int m; // how many times for loop

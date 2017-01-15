@@ -2,6 +2,7 @@
 
 LineAnalysis::LineAnalysis() {
 	m = 3;
+	rate = 800.0;
 	//line = l;
 	// s, t ‰Šú‰»
 	
@@ -9,10 +10,11 @@ LineAnalysis::LineAnalysis() {
 
 void LineAnalysis::setup(ofPolyline _line) {
 	FOR(i, _line.size()) {
-		line.addVertex((_line.getVertices()[i].x - 100)/800.0, (-_line.getVertices()[i].y + 900)/800.0);
+		line.addVertex((_line.getVertices()[i].x - 100)/rate, (-_line.getVertices()[i].y + 900)/rate);
 	}
 	cout << line.getVertices()[0] << endl;
 	cout << line.getVertices()[line.size()-1] << endl;
+	p = d = 0;
 }
 
 /*
@@ -28,16 +30,17 @@ ofPolyline LineAnalysis::calcLeastSquaresMethod()
 	int N = line.size();
 	double min = INT_MAX;
 
-	const int num = 50;
+	const int num = 9;
 	const int ARR = num;
 	double a[ARR + 1][ARR + 2], s[2 * ARR + 1], t[ARR + 1];
+	ofPolyline func[num];
 
-	int MWhenMin = 2;
-	for(int M = 2; M < num; M++){
-		FOR(i, 2 * M + 1) {
+	int MWhenMin = 0;
+	for(int M = num - 1; M < num; M++){
+		FOR(i, 2 * ARR + 1) {
 			s[i] = 0;
 		}
-		FOR(i, M + 1) {
+		FOR(i, ARR + 1) {
 			t[i] = 0;
 		}
 		// s[], t[] ŒvZ
@@ -82,37 +85,42 @@ ofPolyline LineAnalysis::calcLeastSquaresMethod()
 		//dist.erase();
 		vector<double> vSum;
 		double sum = 0;
-		FOR(i, M + 1) {
-			//cout << "a[" << i << "] = " << a[i][M + 1] << endl;
-			FOR(k, N) {
-				cout << "Over chech M:" << M << ",a[]:" << a[i][M + 1] << a[i][M + 1] * pow(pos[k].x, i);
-				cout << "sum:" << a[i][M + 1] * pow(pos[k].x, i) - pos[k].y << endl;
-				sum += abs(a[i][M + 1] * pow(pos[k].x, i) - pos[k].y); //posXi‚É‚¨‚¯‚éy‚Ì’l
-				//vSum.push_back()
+		int count = N - 1;
+		double y;
+		FOR(k, N) {
+			y = 0;
+			//count = 0;
+			FOR(i, M + 1) {
+				/*cout <<"a[]:" << a[i][M + 1] * pow(pos[k].x, i);
+				cout << ",pos:" << pos[k].y;
+				cout << "sum:" << abs(a[i][M + 1] * pow(pos[k].x, i) - pos[k].y) << endl;*/
+				y += a[i][M + 1] * pow(pos[k].x, i); //posXi‚É‚¨‚¯‚éy‚Ì’l
+				//count++;
 			}
+			//cout << "x:" << pos[k].x <<",y:"<<y<< endl;
+			sum += abs(y - pos[k].y);
 		}
 
-		double sumDist = sum;
-		//cout << sum << endl;
-		if (min > sumDist) {
-			min = sumDist;
+		//cout << sum/pow(count, 1) << endl;
+		FOR(i, M + 1) {
+			cout << "a[" << i << "] = " << a[i][M + 1] << endl;
+		}
+		if (min == /*sum/pow(count, 1)*/ INT_MAX) {
+			min = sum/pow(count, 1);
 			MWhenMin = M;
+			for (double px = 0; px <= line.getVertices()[line.size() - 1].x; px += 0.01) {
+				double py = 0;
+				FOR(k, M + 1) {
+					py += a[k][M + 1] * pow(px, k);
+				}
+				
+				//cout << "x:" << px << ",y:" << py << endl;
+				func[M].addVertex(px, py);
+			}
 		}
-	}
-	ofPolyline func;
-	for (double px = 0; px <= line.getVertices()[line.size() - 1].x; px += 0.01) {
-		double py = 0;
-		FOR(k, MWhenMin + 1) {
-			py += a[k][MWhenMin + 1] * pow(px, k);
-		}
-		FOR(i, MWhenMin + 1) {
-			//cout << "a[" << i << "] = " << a[i][MWhenMin + 1] << endl;
-		}
-		//cout << "x:" << px << ",y:" << py << endl;
-		func.addVertex(px, py);
 	}
 	cout << "M:" << MWhenMin << endl;
-	return func;
+	return func[MWhenMin];
 }
 
 ofPolyline LineAnalysis::calc() {
