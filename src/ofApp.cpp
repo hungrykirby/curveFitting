@@ -38,13 +38,19 @@ void ofApp::draw(){
 	if (newLine.size() > 0) {
 		ofSetColor(200, 100, 100);
 		newLine.draw();
+		ofDrawBitmapString("order of a expected polynomial : " + ofToString(lA._M), 20, 20);
 	}
 
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	line.clear();
+	if ('0' <= key && key <= '9') {
+		lA.setM(key - '0');
+	}
+	else {
+		line.clear();
+	}
 }
 
 //--------------------------------------------------------------

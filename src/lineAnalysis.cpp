@@ -3,9 +3,7 @@
 LineAnalysis::LineAnalysis() {
 	m = 3;
 	rate = 800.0;
-	//line = l;
-	// s, t ‰Šú‰»
-	
+	_M = 3;
 }
 
 void LineAnalysis::setup(ofPolyline _line) {
@@ -15,6 +13,10 @@ void LineAnalysis::setup(ofPolyline _line) {
 	cout << line.getVertices()[0] << endl;
 	cout << line.getVertices()[line.size()-1] << endl;
 	p = d = 0;
+}
+
+void LineAnalysis::setM(int key) {
+	_M = key;
 }
 
 /*
@@ -30,10 +32,10 @@ ofPolyline LineAnalysis::calcLeastSquaresMethod()
 	int N = line.size();
 	double min = INT_MAX;
 
-	const int num = 9;
-	const int ARR = num;
+	const int num = _M;
+	const int ARR = 15;
 	double a[ARR + 1][ARR + 2], s[2 * ARR + 1], t[ARR + 1];
-	ofPolyline func[num];
+	ofPolyline func[ARR];
 
 	int MWhenMin = 0;
 	for(int M = num - 1; M < num; M++){

@@ -10,10 +10,12 @@ public:
 	ofPolyline line;
 	ofPolyline calc();
 	void setup(ofPolyline _line);
+	void setM(int key);
 	ofPolyline calcLeastSquaresMethod();
 	ofPolyline lSM(vector<int> in); //Least-square method
 	float sq(ofVec2f pos1, ofVec2f pos2); //ofDist to int
 	float rate;
+	int _M;
 
 private:
 	int m; // how many times for loop
